@@ -273,7 +273,7 @@
   "marker": {"key": "marker", "type": "typeCombo", "label": "Type"},
   "material": {"key": "material", "type": "combo", "label": "Material"},
   "max_age": {"key": "max_age", "type": "number", "minValue": 0, "label": "Maximum Age", "terms": ["upper age limit"]},
-  "maxheight": {"key": "maxheight", "type": "combo", "label": "Max Height", "placeholder": "4, 4.5, 5, 14'0\", 14'6\", 15'0\"", "snake_case": false},
+  "maxheight": {"key": "maxheight", "type": "maxheight", "label": "Max Height", "snake_case": false},
   "maxspeed": {"key": "maxspeed", "type": "maxspeed", "label": "Speed Limit", "placeholder": "40, 50, 60..."},
   "maxspeed/advisory": {"key": "maxspeed:advisory", "type": "maxspeed", "label": "Advisory Speed Limit", "placeholder": "40, 50, 60..."},
   "maxstay": {"key": "maxstay", "type": "combo", "label": "Max Stay", "options": ["15 min", "30 min", "45 min", "1 hr", "1.5 hr", "2 hr", "2.5 hr", "3 hr", "4 hr", "1 day", "2 day"], "snake_case": false},

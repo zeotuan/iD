@@ -724,6 +724,13 @@ en:
     add_fields: "Add field:"
     lock:
       suggestion: 'The "{label}" field is locked because there is a Wikidata tag. You can delete it or edit the tags in the "Tags" section.'
+    maxheight:
+      # symbol for meters
+      meter: m
+      # abbreviation of feet
+      foot: ft
+      # abbreviation of inches
+      inch: in
   background:
     title: Background
     description: Background Settings

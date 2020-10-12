@@ -928,6 +928,11 @@
             "add_fields": "Add field:",
             "lock": {
                 "suggestion": "The \"{label}\" field is locked because there is a Wikidata tag. You can delete it or edit the tags in the \"Tags\" section."
+            },
+            "maxheight": {
+                "meter": "m",
+                "foot": "ft",
+                "inch": "in"
             }
         },
         "background": {
@@ -4130,8 +4135,7 @@
                 },
                 "maxheight": {
                     "label": "Max Height",
-                    "terms": "",
-                    "placeholder": "4, 4.5, 5, 14'0\", 14'6\", 15'0\""
+                    "terms": ""
                 },
                 "maxspeed": {
                     "label": "Speed Limit",
@@ -11141,6 +11145,13 @@
                 },
                 "description": "Orthophotos from the municipality of Stockholm 2016, CC0 license",
                 "name": "Stockholm Orthophoto"
+            },
+            "susono_shizuoka_jp_orthophoto": {
+                "attribution": {
+                    "text": "Susono city orthophoto"
+                },
+                "description": "The aerial photos released by Susono City as open data.",
+                "name": "Susono city orthophoto"
             },
             "tf-cycle": {
                 "attribution": {
