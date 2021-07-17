@@ -3,12 +3,12 @@ import { actionDeleteWay } from './delete_way';
 
 
 // https://github.com/openstreetmap/potlatch2/blob/master/net/systemeD/halcyon/connection/actions/DeleteNodeAction.as
-export function actionDeleteNode(nodeId) {
-    var action = function(graph) {
-        var node = graph.entity(nodeId);
+export const actionDeleteNode = (nodeId) => {
+    let action = function(graph) {
+        let node = graph.entity(nodeId);
 
         graph.parentWays(node)
-            .forEach(function(parent) {
+            .forEach((parent) => {
                 parent = parent.removeNode(nodeId);
                 graph = graph.replace(parent);
 
@@ -18,7 +18,7 @@ export function actionDeleteNode(nodeId) {
             });
 
         graph.parentRelations(node)
-            .forEach(function(parent) {
+            .forEach((parent) => {
                 parent = parent.removeMembersWithID(nodeId);
                 graph = graph.replace(parent);
 
@@ -32,4 +32,4 @@ export function actionDeleteNode(nodeId) {
 
 
     return action;
-}
+};

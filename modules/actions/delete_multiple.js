@@ -4,14 +4,14 @@ import { actionDeleteWay } from './delete_way';
 
 
 export function actionDeleteMultiple(ids) {
-    var actions = {
+    let actions = {
         way: actionDeleteWay,
         node: actionDeleteNode,
         relation: actionDeleteRelation
     };
 
 
-    var action = function(graph) {
+    let action = function(graph) {
         ids.forEach(function(id) {
             if (graph.hasEntity(id)) { // It may have been deleted already.
                 graph = actions[graph.entity(id).type](id)(graph);

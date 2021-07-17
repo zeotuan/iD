@@ -599,7 +599,6 @@ export function rendererMap(context) {
         }
 
         projection.transform(eventTransform);
-    
         var withinEditableZoom = map.withinEditableZoom();
         if (_lastWithinEditableZoom !== withinEditableZoom) {
             if (_lastWithinEditableZoom !== undefined) {

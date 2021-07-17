@@ -1,8 +1,8 @@
-export function actionChangePreset(entityID, oldPreset, newPreset, skipFieldDefaults) {
-    return function action(graph) {
-        var entity = graph.entity(entityID);
-        var geometry = entity.geometry(graph);
-        var tags = entity.tags;
+export const actionChangePreset = (entityID, oldPreset, newPreset, skipFieldDefaults) => {
+    const action = (graph) => {
+        let entity = graph.entity(entityID);
+        let geometry = entity.geometry(graph);
+        let tags = entity.tags;
 
         // preserve tags that the new preset might care about, if any
         if (oldPreset) tags = oldPreset.unsetTags(tags, geometry, newPreset && newPreset.addTags ? Object.keys(newPreset.addTags) : null);
@@ -10,4 +10,5 @@ export function actionChangePreset(entityID, oldPreset, newPreset, skipFieldDefa
 
         return graph.replace(entity.update({tags: tags}));
     };
-}
+    return action;
+};

@@ -18,11 +18,11 @@ import { utilArrayUniq } from '../util';
 //   https://github.com/openstreetmap/josm/blob/mirror/src/org/openstreetmap/josm/actions/MergeNodesAction.java
 //
 export function actionConnect(nodeIDs) {
-    var action = function(graph) {
-        var survivor;
-        var node;
-        var parents;
-        var i, j;
+    let action = function(graph) {
+        let survivor;
+        let node;
+        let parents;
+        let i, j;
 
         // Choose a survivor node, prefer an existing (not new) node - #4974
         for (i = 0; i < nodeIDs.length; i++) {
@@ -64,12 +64,12 @@ export function actionConnect(nodeIDs) {
 
 
     action.disabled = function(graph) {
-        var seen = {};
-        var restrictionIDs = [];
-        var survivor;
-        var node, way;
-        var relations, relation, role;
-        var i, j, k;
+        let seen = {};
+        let restrictionIDs = [];
+        let survivor;
+        let node, way;
+        let relations, relation, role;
+        let i, j, k;
 
         // Choose a survivor node, prefer an existing (not new) node - #4974
         for (i = 0; i < nodeIDs.length; i++) {
@@ -103,9 +103,9 @@ export function actionConnect(nodeIDs) {
         for (i = 0; i < nodeIDs.length; i++) {
             node = graph.entity(nodeIDs[i]);
 
-            var parents = graph.parentWays(node);
+            let parents = graph.parentWays(node);
             for (j = 0; j < parents.length; j++) {
-                var parent = parents[j];
+                let parent = parents[j];
                 relations = graph.parentRelations(parent);
 
                 for (k = 0; k < relations.length; k++) {
@@ -117,6 +117,41 @@ export function actionConnect(nodeIDs) {
             }
         }
 
+        // if a key node appears multiple times (indexOf !== lastIndexOf) it's a FROM-VIA or TO-VIA junction
+        const hasDuplicates = (n, i, arr) => arr.indexOf(n) !== arr.lastIndexOf(n);
+
+        const keyNodeFilter = (froms, tos) => {
+            return (n) => froms.indexOf(n) === -1 && tos.indexOf(n) === -1;
+        };
+
+        const collectNodes = (member, collection) => {
+            let entity = graph.hasEntity(member.id);
+            if (!entity) return;
+
+            let role = member.role || '';
+            if (!collection[role]) {
+                collection[role] = [];
+            }
+
+            if (member.type === 'node') {
+                collection[role].push(member.id);
+                if (role === 'via') {
+                    collection.keyfrom.push(member.id);
+                    collection.keyto.push(member.id);
+                }
+
+            } else if (member.type === 'way') {
+                collection[role].push.apply(collection[role], entity.nodes);
+                if (role === 'from' || role === 'via') {
+                    collection.keyfrom.push(entity.first());
+                    collection.keyfrom.push(entity.last());
+                }
+                if (role === 'to' || role === 'via') {
+                    collection.keyto.push(entity.first());
+                    collection.keyto.push(entity.last());
+                }
+            }
+        };
 
         // test restrictions
         restrictionIDs = utilArrayUniq(restrictionIDs);
@@ -124,18 +159,18 @@ export function actionConnect(nodeIDs) {
             relation = graph.entity(restrictionIDs[i]);
             if (!relation.isComplete(graph)) continue;
 
-            var memberWays = relation.members
+            let memberWays = relation.members
                 .filter(function(m) { return m.type === 'way'; })
                 .map(function(m) { return graph.entity(m.id); });
 
             memberWays = utilArrayUniq(memberWays);
-            var f = relation.memberByRole('from');
-            var t = relation.memberByRole('to');
-            var isUturn = (f.id === t.id);
+            let f = relation.memberByRole('from');
+            let t = relation.memberByRole('to');
+            let isUturn = (f.id === t.id);
 
             // 2a. disable if connection would damage a restriction
             // (a key node is a node at the junction of ways)
-            var nodes = { from: [], via: [], to: [], keyfrom: [], keyto: [] };
+            let nodes = { from: [], via: [], to: [], keyfrom: [], keyto: [] };
             for (j = 0; j < relation.members.length; j++) {
                 collectNodes(relation.members[j], nodes);
             }
@@ -143,19 +178,19 @@ export function actionConnect(nodeIDs) {
             nodes.keyfrom = utilArrayUniq(nodes.keyfrom.filter(hasDuplicates));
             nodes.keyto = utilArrayUniq(nodes.keyto.filter(hasDuplicates));
 
-            var filter = keyNodeFilter(nodes.keyfrom, nodes.keyto);
+            let filter = keyNodeFilter(nodes.keyfrom, nodes.keyto);
             nodes.from = nodes.from.filter(filter);
             nodes.via = nodes.via.filter(filter);
             nodes.to = nodes.to.filter(filter);
 
-            var connectFrom = false;
-            var connectVia = false;
-            var connectTo = false;
-            var connectKeyFrom = false;
-            var connectKeyTo = false;
+            let connectFrom = false;
+            let connectVia = false;
+            let connectTo = false;
+            let connectKeyFrom = false;
+            let connectKeyTo = false;
 
             for (j = 0; j < nodeIDs.length; j++) {
-                var n = nodeIDs[j];
+                let n = nodeIDs[j];
                 if (nodes.from.indexOf(n) !== -1)    { connectFrom = true; }
                 if (nodes.via.indexOf(n) !== -1)     { connectVia = true; }
                 if (nodes.to.indexOf(n) !== -1)      { connectTo = true; }
@@ -172,8 +207,8 @@ export function actionConnect(nodeIDs) {
             if (connectKeyFrom || connectKeyTo) {
                 if (nodeIDs.length !== 2) { return 'restriction'; }
 
-                var n0 = null;
-                var n1 = null;
+                let n0 = null;
+                let n1 = null;
                 for (j = 0; j < memberWays.length; j++) {
                     way = memberWays[j];
                     if (way.contains(nodeIDs[0])) { n0 = nodeIDs[0]; }
@@ -181,7 +216,7 @@ export function actionConnect(nodeIDs) {
                 }
 
                 if (n0 && n1) {    // both nodes are part of the restriction
-                    var ok = false;
+                    let ok = false;
                     for (j = 0; j < memberWays.length; j++) {
                         way = memberWays[j];
                         if (way.areAdjacent(n0, n1)) {
@@ -216,46 +251,6 @@ export function actionConnect(nodeIDs) {
 
         return false;
 
-
-        // if a key node appears multiple times (indexOf !== lastIndexOf) it's a FROM-VIA or TO-VIA junction
-        function hasDuplicates(n, i, arr) {
-            return arr.indexOf(n) !== arr.lastIndexOf(n);
-        }
-
-        function keyNodeFilter(froms, tos) {
-            return function(n) {
-                return froms.indexOf(n) === -1 && tos.indexOf(n) === -1;
-            };
-        }
-
-        function collectNodes(member, collection) {
-            var entity = graph.hasEntity(member.id);
-            if (!entity) return;
-
-            var role = member.role || '';
-            if (!collection[role]) {
-                collection[role] = [];
-            }
-
-            if (member.type === 'node') {
-                collection[role].push(member.id);
-                if (role === 'via') {
-                    collection.keyfrom.push(member.id);
-                    collection.keyto.push(member.id);
-                }
-
-            } else if (member.type === 'way') {
-                collection[role].push.apply(collection[role], entity.nodes);
-                if (role === 'from' || role === 'via') {
-                    collection.keyfrom.push(entity.first());
-                    collection.keyfrom.push(entity.last());
-                }
-                if (role === 'to' || role === 'via') {
-                    collection.keyto.push(entity.first());
-                    collection.keyto.push(entity.last());
-                }
-            }
-        }
     };
 
 

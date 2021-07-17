@@ -3,7 +3,7 @@ import { utilArrayUniq } from '../util';
 
 
 // https://github.com/openstreetmap/potlatch2/blob/master/net/systemeD/halcyon/connection/actions/DeleteRelationAction.as
-export function actionDeleteRelation(relationID, allowUntaggedMembers) {
+export const actionDeleteRelation = (relationID, allowUntaggedMembers) => {
 
     function canDeleteEntity(entity, graph) {
         return !graph.parentWays(entity).length &&
@@ -12,8 +12,8 @@ export function actionDeleteRelation(relationID, allowUntaggedMembers) {
     }
 
 
-    var action = function(graph) {
-        var relation = graph.entity(relationID);
+    let action = (graph) => {
+        let relation = graph.entity(relationID);
 
         graph.parentRelations(relation)
             .forEach(function(parent) {
@@ -25,11 +25,11 @@ export function actionDeleteRelation(relationID, allowUntaggedMembers) {
                 }
             });
 
-        var memberIDs = utilArrayUniq(relation.members.map(function(m) { return m.id; }));
+        let memberIDs = utilArrayUniq(relation.members.map(function(m) { return m.id; }));
         memberIDs.forEach(function(memberID) {
             graph = graph.replace(relation.removeMembersWithID(memberID));
 
-            var entity = graph.entity(memberID);
+            let entity = graph.entity(memberID);
             if (canDeleteEntity(entity, graph)) {
                 graph = actionDeleteMultiple([memberID])(graph);
             }
@@ -40,4 +40,4 @@ export function actionDeleteRelation(relationID, allowUntaggedMembers) {
 
 
     return action;
-}
+};

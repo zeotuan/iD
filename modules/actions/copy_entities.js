@@ -1,13 +1,13 @@
 export function actionCopyEntities(ids, fromGraph) {
-    var _copies = {};
+    let _copies = {};
 
 
-    var action = function(graph) {
+    let action = function(graph) {
         ids.forEach(function(id) {
             fromGraph.entity(id).copy(fromGraph, _copies);
         });
 
-        for (var id in _copies) {
+        for (let id in _copies) {
             graph = graph.replace(_copies[id]);
         }
 

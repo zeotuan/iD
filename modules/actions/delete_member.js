@@ -1,9 +1,9 @@
 import { actionDeleteRelation } from './delete_relation';
 
 
-export function actionDeleteMember(relationId, memberIndex) {
-    return function(graph) {
-        var relation = graph.entity(relationId)
+export const actionDeleteMember = (relationId, memberIndex) => {
+    return (graph) => {
+        let relation = graph.entity(relationId)
             .removeMember(memberIndex);
 
         graph = graph.replace(relation);
@@ -14,4 +14,4 @@ export function actionDeleteMember(relationId, memberIndex) {
 
         return graph;
     };
-}
+};

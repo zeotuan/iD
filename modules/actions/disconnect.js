@@ -16,16 +16,16 @@ import { osmNode } from '../osm/node';
 //   https://github.com/openstreetmap/josm/blob/mirror/src/org/openstreetmap/josm/actions/UnGlueAction.java
 //
 export function actionDisconnect(nodeId, newNodeId) {
-    var wayIds;
+    let wayIds;
 
 
-    var action = function(graph) {
-        var node = graph.entity(nodeId);
-        var connections = action.connections(graph);
+    let action = function(graph) {
+        let node = graph.entity(nodeId);
+        let connections = action.connections(graph);
 
         connections.forEach(function(connection) {
-            var way = graph.entity(connection.wayID);
-            var newNode = osmNode({id: newNodeId, loc: node.loc, tags: node.tags});
+            let way = graph.entity(connection.wayID);
+            let newNode = osmNode({id: newNodeId, loc: node.loc, tags: node.tags});
 
             graph = graph.replace(newNode);
             if (connection.index === 0 && way.isArea()) {
@@ -45,11 +45,11 @@ export function actionDisconnect(nodeId, newNodeId) {
 
 
     action.connections = function(graph) {
-        var candidates = [];
-        var keeping = false;
-        var parentWays = graph.parentWays(graph.entity(nodeId));
-        var way, waynode;
-        for (var i = 0; i < parentWays.length; i++) {
+        let candidates = [];
+        let keeping = false;
+        let parentWays = graph.parentWays(graph.entity(nodeId));
+        let way, waynode;
+        for (let i = 0; i < parentWays.length; i++) {
             way = parentWays[i];
             if (wayIds && wayIds.indexOf(way.id) === -1) {
                 keeping = true;
@@ -58,7 +58,7 @@ export function actionDisconnect(nodeId, newNodeId) {
             if (way.isArea() && (way.nodes[0] === nodeId)) {
                 candidates.push({ wayID: way.id, index: 0 });
             } else {
-                for (var j = 0; j < way.nodes.length; j++) {
+                for (let j = 0; j < way.nodes.length; j++) {
                     waynode = way.nodes[j];
                     if (waynode === nodeId) {
                         if (way.isClosed() &&
@@ -79,15 +79,15 @@ export function actionDisconnect(nodeId, newNodeId) {
 
 
     action.disabled = function(graph) {
-        var connections = action.connections(graph);
+        let connections = action.connections(graph);
         if (connections.length === 0) return 'not_connected';
 
-        var parentWays = graph.parentWays(graph.entity(nodeId));
-        var seenRelationIds = {};
-        var sharedRelation;
+        let parentWays = graph.parentWays(graph.entity(nodeId));
+        let seenRelationIds = {};
+        let sharedRelation;
 
         parentWays.forEach(function(way) {
-            var relations = graph.parentRelations(way);
+            let relations = graph.parentRelations(way);
             relations.forEach(function(relation) {
                 if (relation.id in seenRelationIds) {
                     if (wayIds) {

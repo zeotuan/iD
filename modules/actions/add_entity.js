@@ -1,5 +1,6 @@
-export function actionAddEntity(way) {
-    return function(graph) {
+export const actionAddEntity = (way) => {
+    return (graph) => {
         return graph.replace(way);
     };
-}
+};
+

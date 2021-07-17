@@ -3,14 +3,14 @@ import { actionDeleteRelation } from './delete_relation';
 
 
 // https://github.com/openstreetmap/potlatch2/blob/master/net/systemeD/halcyon/connection/actions/DeleteWayAction.as
-export function actionDeleteWay(wayID) {
+export const actionDeleteWay = (wayID) => {
 
-    function canDeleteNode(node, graph) {
+    const canDeleteNode= (node, graph) => {
         // don't delete nodes still attached to ways or relations
         if (graph.parentWays(node).length ||
             graph.parentRelations(node).length) return false;
 
-        var geometries = osmNodeGeometriesForTags(node.tags);
+        let geometries = osmNodeGeometriesForTags(node.tags);
         // don't delete if this node can be a standalone point
         if (geometries.point) return false;
         // delete if this node only be a vertex
@@ -19,11 +19,11 @@ export function actionDeleteWay(wayID) {
         // iD doesn't know if this should be a point or vertex,
         // so only delete if there are no interesting tags
         return !node.hasInterestingTags();
-    }
+    };
 
 
-    var action = function(graph) {
-        var way = graph.entity(wayID);
+    let action = (graph) => {
+        let way = graph.entity(wayID);
 
         graph.parentRelations(way).forEach(function(parent) {
             parent = parent.removeMembersWithID(wayID);
@@ -37,7 +37,7 @@ export function actionDeleteWay(wayID) {
         (new Set(way.nodes)).forEach(function(nodeID) {
             graph = graph.replace(way.removeNode(nodeID));
 
-            var node = graph.entity(nodeID);
+            let node = graph.entity(nodeID);
             if (canDeleteNode(node, graph)) {
                 graph = graph.remove(node);
             }
@@ -48,4 +48,4 @@ export function actionDeleteWay(wayID) {
 
 
     return action;
-}
+};
